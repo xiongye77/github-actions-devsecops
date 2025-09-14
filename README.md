@@ -13,11 +13,14 @@ DAST with OWASP ZAP Baseline against your staging URL (fails on Medium/High)
 
 # SAST Static Application Security Testing:  SonarQube
 
-# SBOM(Software Bill of Material): syft produces a CycloneDX SBOM for the built image; it’s stored as a workflow artifact and attached to the image as a Cosign attestation (tied to the digest in GHCR).
+# SBOM(Software Bill of Material): 
+syft produces a CycloneDX SBOM for the built image; it’s stored as a workflow artifact and attached to the image as a Cosign attestation (tied to the digest in GHCR).
 
-# SCA(Software Composition Analysis): snyk test scans your dependencies; it fails the job on High/Critical issues and publishes SARIF to Security → Code scanning.
+# SCA(Software Composition Analysis): 
+snyk test scans your dependencies; it fails the job on High/Critical issues and publishes SARIF to Security → Code scanning.
 
-# DAST(Dynamtic Application Security Testing): ZAP Baseline crawls your staging URL and fails on Medium/High alerts; reports are saved as artifacts.
+# DAST(Dynamtic Application Security Testing): 
+ZAP Baseline crawls your staging URL and fails on Medium/High alerts; reports are saved as artifacts.
 
 <img width="1722" alt="image" src="https://github.com/user-attachments/assets/2c2e1ff1-6068-4415-96ce-0a4d835bab77">
 
