@@ -3,13 +3,32 @@
 
 # Single github action pipeline can run SAST + SCA + SBOM + DAST 
 
-SAST: CodeQL (code scanning in PRs)
+1 SAST (earliest, on PR)
 
-SCA with Snyk (fails on High/Critical; uploads SARIF)
+Analyze source code before build. Fast feedback, catches code-level bugs/taint issues. CodeQL (code scanning in PRs)
 
-SBOM generation with Syft (CycloneDX) and Cosign attestation to your image
+2 SCA (twice: PR & post-build) SCA with Snyk (fails on High/Critical; uploads SARIF)
 
-DAST with OWASP (Open Worldwide Application Security Project) ZAP Baseline against your staging URL (fails on Medium/High)
+PR stage: scan dependency manifests/lockfiles (app-level SCA).
+
+Post-build: scan the built artifact/image (OS packages + app deps). This catches what actually ships.
+
+3 SBOM (at build, after artifact is final) SBOM generation with Syft (CycloneDX) and Cosign attestation to your image
+
+Generate from the final image/binary so it exactly matches what you’ll deploy; sign/attest and store.
+
+Syft (Anchore) – CycloneDX/SPDX for images, dirs, repos.
+syft ghcr.io/acme/app:1.2.3 -o cyclonedx-json > sbom.cdx.json
+
+Trivy (Aqua) – SBOM plus vuln/secret/IaC scanners.
+trivy image --format cyclonedx -o sbom.cdx.json ghcr.io/acme/app:1.2.3
+
+
+4 DAST (after deploy to staging/prod mirror) with OWASP (Open Worldwide Application Security Project) ZAP Baseline against your staging URL (fails on Medium/High)
+
+Needs a running app/API with auth/test data; run baseline on every change, deeper active scans nightly.
+
+
 
 # SAST Static Application Security Testing:  SonarQube
 
