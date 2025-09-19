@@ -9,18 +9,33 @@ SCA with Snyk (fails on High/Critical; uploads SARIF)
 
 SBOM generation with Syft (CycloneDX) and Cosign attestation to your image
 
-DAST with OWASP ZAP Baseline against your staging URL (fails on Medium/High)
+DAST with OWASP (Open Worldwide Application Security Project) ZAP Baseline against your staging URL (fails on Medium/High)
 
 # SAST Static Application Security Testing:  SonarQube
 
 # SBOM(Software Bill of Material): 
-syft produces a CycloneDX SBOM for the built image; it’s stored as a workflow artifact and attached to the image as a Cosign attestation (tied to the digest in GHCR).
+Syft produces a CycloneDX SBOM for the built image; it’s stored as a workflow artifact and attached to the image as a Cosign attestation (tied to the digest in GHCR).
+Uses open formats (CycloneDX or SPDX)
+Stored centrally (e.g., registry/Artifact Hub, Dependency-Track) and kept in sync with deployments.
+Signed/attested (e.g., Cosign) and queryable.
+
+trivy image --format cyclonedx -o sbom.cdx.json your.registry/app:tag
 
 # SCA(Software Composition Analysis): 
-snyk test scans your dependencies; it fails the job on High/Critical issues and publishes SARIF to Security → Code scanning.
+Snyk test scans your dependencies; it fails the job on High/Critical issues and publishes SARIF to Security → Code scanning.
+Trivy: finds CVEs in OS packages & app dependencies in images, filesystems, and repos.
 
 # DAST(Dynamtic Application Security Testing): 
+it focuses on inputs and outputs of the running application.
+The goal of DAST is to catch any security issues that weren’t caught by SAST, which means that they’re supposed to be complementary to each other.
 ZAP Baseline crawls your staging URL and fails on Medium/High alerts; reports are saved as artifacts.
+
+
+# Shift-left security 
+with DevSecOps, we want to include security from the very beginning so that problems are found as early in the process as possible: closest to the decision makers and to the context.
+
+<img width="1090" height="596" alt="image" src="https://github.com/user-attachments/assets/8180e8fa-06e2-456e-b8a3-c4992e22528e" />
+<img width="1158" height="610" alt="image" src="https://github.com/user-attachments/assets/82c911e6-fe35-463f-88eb-e2c56da9f527" />
 
 <img width="1722" alt="image" src="https://github.com/user-attachments/assets/2c2e1ff1-6068-4415-96ce-0a4d835bab77">
 
