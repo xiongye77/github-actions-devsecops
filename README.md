@@ -23,8 +23,11 @@ syft ghcr.io/acme/app:1.2.3 -o cyclonedx-json > sbom.cdx.json
 Trivy (Aqua) – SBOM plus vuln/secret/IaC scanners.
 trivy image --format cyclonedx -o sbom.cdx.json ghcr.io/acme/app:1.2.3
 
+Sign images + SBOM attestation (Cosign).
 
-4 DAST (after deploy to staging/prod mirror) with OWASP (Open Worldwide Application Security Project) ZAP Baseline against your staging URL (fails on Medium/High)
+4  Admission policy (Kyverno/Gatekeeper/Sigstore) to allow only signed images from your CI.
+
+5  DAST (after deploy to staging/prod mirror) with OWASP (Open Worldwide Application Security Project) ZAP Baseline against your staging URL (fails on Medium/High)
 
 Needs a running app/API with auth/test data; run baseline on every change, deeper active scans nightly.
 
@@ -66,10 +69,37 @@ The scan result as following: Critical severity vulnerability found in zlib/zlib
 
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/789ae184-fe2f-4e08-b053-5245ee26c587">
 
+
+# Container image best practices 
+<img width="1176" height="832" alt="image" src="https://github.com/user-attachments/assets/da81260f-b481-4fba-84c1-8dbad1b30940" />
+<img width="1501" height="883" alt="image" src="https://github.com/user-attachments/assets/e6e2f9ff-09a5-42fe-bc30-9ed14901c521" />
+
+<img width="991" height="759" alt="image" src="https://github.com/user-attachments/assets/554984ef-dd91-4e83-9a91-be9b889f10a4" />
+
+# Signs the image using Cosign
+Signing a container image with Cosign makes your supply chain tamper-evident and trustable. It proves who built an image and that what you deploy is exactly what was built.
+1 Integrity: Binds a cryptographic signature to the image digest → any post-build change breaks verification.
+2 Policy enforcement: Kubernetes admission (Kyverno/Gatekeeper/Sigstore Policy Controller) can block unsigned/untrusted images.
+3 Auditability: Signatures/attestations can be logged in a transparency log (Rekor) → non-repudiation and forensics.
+4 Rich metadata (attestations): Attach SBOMs, build provenance (SLSA), and vulnerability scan results; verify them at deploy time.
+
 # Run OWASP ZAP to our site 
 OWASP ZAP is a penetration testing tool that helps developers and security professionals detect and find vulnerabilities in web applications. OWASP ZAP performs multiple security functions including: Passively scanning web requests. Using dictionary lists to search for files and folders on web servers.
 <img width="1325" alt="image" src="https://github.com/user-attachments/assets/75cdae9b-05e8-4106-9abf-38d71d6b73f5">
 <img width="1287" alt="image" src="https://github.com/user-attachments/assets/070a95b7-8717-4c5f-8cdf-b3eeed49c996">
+
+# OPA Gatekeeper 
+The cluster can enforce Kubernetes policies at admission time (when resources are created/updated). Gatekeeper is the OPA-powered admission controller that lets you write policy-as-code and block/allow deploys based on rules.
+
+# Kyverno Kubernetes-native policy engine
+Policies are just Kubernetes CRDs (YAML), not Rego:
+
+ClusterPolicy (cluster-wide) and Policy (namespace-scoped).
+
+Runs as admission webhooks (mutating + validating) and a background controller that scans existing resources and produces PolicyReports.
+
+<img width="819" height="533" alt="image" src="https://github.com/user-attachments/assets/79b921d0-d5d4-43ad-a5bb-fa8aa6c68765" />
+<img width="793" height="577" alt="image" src="https://github.com/user-attachments/assets/71f5fdf9-715c-4fd0-953e-3f03f0fb0db8" />
 
 
 # Cloudformation event order 
