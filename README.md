@@ -92,6 +92,8 @@ OWASP ZAP is a penetration testing tool that helps developers and security profe
 The cluster can enforce Kubernetes policies at admission time (when resources are created/updated). Gatekeeper is the OPA-powered admission controller that lets you write policy-as-code and block/allow deploys based on rules.
 
 # Kyverno Kubernetes-native policy engine
+<img width="812" height="273" alt="image" src="https://github.com/user-attachments/assets/c0ec72ad-0fd8-4fa3-af4e-4d00e7a4c716" />
+
 Policies are just Kubernetes CRDs (YAML), not Rego:
 
 ClusterPolicy (cluster-wide) and Policy (namespace-scoped).
