@@ -1,5 +1,10 @@
 # Devsecops
 
+# Common Threats & The Importance of Container Security
+<img width="2978" height="1872" alt="image" src="https://github.com/user-attachments/assets/46f1c135-bb1f-4304-970d-61edc162433f" />
+<img width="1490" height="888" alt="image" src="https://github.com/user-attachments/assets/ded5dd0e-cbb9-4746-ab1c-f1d1b3d9183b" />
+<img width="987" height="580" alt="image" src="https://github.com/user-attachments/assets/f9d52971-afb1-489c-bc6a-bba5d6c865c1" />
+
 
 # Single github action pipeline can run SAST + SCA + SBOM + DAST 
 
@@ -82,6 +87,74 @@ Signing a container image with Cosign makes your supply chain tamper-evident and
 2 Policy enforcement: Kubernetes admission (Kyverno/Gatekeeper/Sigstore Policy Controller) can block unsigned/untrusted images.
 3 Auditability: Signatures/attestations can be logged in a transparency log (Rekor) → non-repudiation and forensics.
 4 Rich metadata (attestations): Attach SBOMs, build provenance (SLSA), and vulnerability scan results; verify them at deploy time.
+
+# Adminssion Control (2025/09/27)
+
+
+Kubernetes (K8s) Admission Control is a critical security and governance mechanism that acts as a "gatekeeper" for your cluster. It intercepts requests to the Kubernetes API server after the request has been authenticated and authorized, but before the object is persisted to etcd (the cluster's database).
+<img width="1718" height="622" alt="image" src="https://github.com/user-attachments/assets/8522290d-7abe-4eb5-b513-f9dac0e2aa0f" />
+
+Key Functions and Benefits
+Admission controllers are essential for various advanced Kubernetes features and cluster management:
+
+1 Security: They enforce security contexts, prevent the use of privileged containers, and ensure that only compliant images are deployed.
+
+2 Policy Enforcement/Governance: They ensure that all resources adhere to organizational rules, such as mandatory labels, naming conventions, and resource limits.
+
+3 Resource Management: They enforce resource quotas and limits (CPU, memory) to prevent resource hogging and maintain cluster stability.
+
+4 Defaulting: Mutating controllers can automatically inject necessary values if they are missing from a resource definition, such as setting a default storage class for a PersistentVolumeClaim.
+
+
+
+# POD Security Admission 
+Pod Security Admission (PSA) is used to control what Pods are allowed to run, from a security point of view.
+PSA’s purpose is to prevent insecure Pod specs from ever getting admitted—it’s guardrails for Pod security
+<img width="1648" height="461" alt="image" src="https://github.com/user-attachments/assets/2a128503-6864-41bf-afca-3d58f78df4c7" />
+Profiles you choose per namespace:
+
+1 privileged – allow everything (for system namespaces)
+
+2 baseline – blocks known-bad patterns
+
+3 restricted – strong hardening (most prod namespaces)
+
+Modes:
+
+1 enforce (deny non-compliant pods)
+
+2 warn (allow but show warnings)
+
+3 audit (allow but log)
+
+Defaults per namespace
+
+Prod app namespaces: enforce=restricted, warn/audit=restricted, *-version=latest.
+
+Dev / QA: enforce=baseline, warn/audit=restricted.
+
+System / operators (e.g., kube-system, CNI/CSI): keep privileged (no restrictive labels).
+
+
+
+
+# Container Runtime Security 
+<img width="1102" height="510" alt="image" src="https://github.com/user-attachments/assets/dd43a645-42e8-40c4-ba1b-ae5f31d16776" />
+Falco (by Sysdig) is the most popular and widely adopted container runtime security tool. It runs as a DaemonSet, uses eBPF/syscalls, and ships with lots of community rules to detect things like exec-ing a shell in a container, privilege-escalation, or sensitive file access.
+
+EKS Runtime Monitoring provides runtime threat detection coverage for Amazon EKS nodes and containers. It uses the GuardDuty security agent (EKS add-on) that adds runtime visibility into individual EKS workloads, for example, file access, process execution, privilege escalation, and network connections identifying specific containers that may be potentially compromised.
+
+Detects suspicious runtime behavior: unexpected shells, privilege-escalation attempts, crypto-mining, sensitive file access, anomalous network activity, etc.
+
+Findings appear in GuardDuty (and flow to EventBridge/SIEM for alerting/auto-remediation).
+
+Pairs well with EKS Audit Log Monitoring (control-plane detections without an agent).
+
+Note: GuardDuty detects and alerts; it doesn’t block containers. For prevention/enforcement, keep using PSA restricted, admission policies (Kyverno/OPA/CEL), network policies, and runtime LSMs (SELinux/AppArmor) alongside GuardDuty.
+
+<img width="1051" height="808" alt="image" src="https://github.com/user-attachments/assets/7dde5b4e-82e5-4064-894c-327a0488bb9d" />
+
+
 
 # Run OWASP ZAP to our site 
 OWASP ZAP is a penetration testing tool that helps developers and security professionals detect and find vulnerabilities in web applications. OWASP ZAP performs multiple security functions including: Passively scanning web requests. Using dictionary lists to search for files and folders on web servers.
