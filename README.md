@@ -104,32 +104,8 @@ kubectl label ns prod-apps \
 
 2) Kyverno policy (flexible; easy to read) 
 Install Kyverno, then apply a deny policy for privileged containers
-**bold**
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: deny-privileged-containers
-spec:
-  validationFailureAction: Enforce   # or Audit while testing
-  rules:
-    - name: no-privileged
-      match:
-        any:
-        - resources:
-            kinds: ["Pod"]
-            namespaces: ["prod-apps"]   # or omit to affect all namespaces
-      validate:
-        message: "Privileged containers are not allowed"
-        pattern:
-          spec:
-            containers:
-            - securityContext:
-                # either not present or explicitly false
-                (privileged): "false"
-            # also cover initContainers if you use them:
-            =(initContainers):
-            - securityContext:
-                (privileged): "false"
+<img width="713" height="570" alt="image" src="https://github.com/user-attachments/assets/6b121e4f-89f6-4e60-9cd2-dd9a2b2e941d" />
+
 
 
 
