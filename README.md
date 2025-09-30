@@ -156,9 +156,21 @@ System / operators (e.g., kube-system, CNI/CSI): keep privileged (no restrictive
 
 
 
-# Container Runtime Security 
+# Container Runtime Security (AWS GuardDuty EKS Runtime Monitor and Falco )
 <img width="1102" height="510" alt="image" src="https://github.com/user-attachments/assets/dd43a645-42e8-40c4-ba1b-ae5f31d16776" />
 Falco (by Sysdig) is the most popular and widely adopted container runtime security tool. It runs as a DaemonSet, uses eBPF/syscalls, and ships with lots of community rules to detect things like exec-ing a shell in a container, privilege-escalation, or sensitive file access.
+
+<img width="897" height="510" alt="image" src="https://github.com/user-attachments/assets/a0ed507a-30e3-4994-8064-795f5b3d20bc" />
+<img width="1307" height="690" alt="image" src="https://github.com/user-attachments/assets/855dc045-2ab4-480f-8238-7b2a7a6bf622" />
+
+1  fastest value, minimal ops, centralized AWS findings (Security Hub), and predictable pricing then Choose GuardDuty EKS Runtime Monitoring (+ EKS Protection)
+2  need custom, fine-grained policies (e.g., “alert if apt/yum runs in prod, except image X”), custom sinks, or multi-cloud/on-prem parity. Add Falco (often alongside GuardDuty)
+
+# Practical combo (common in EKS) Many teams run both
+
+1 GuardDuty for managed detections + account-level visibility and compliance reporting.
+
+2 Falco for tailored, high-signal rules your team controls (with Sidekick → Slack/SIEM) and rapid iteration. 
 
 EKS Runtime Monitoring provides runtime threat detection coverage for Amazon EKS nodes and containers. It uses the GuardDuty security agent (EKS add-on) that adds runtime visibility into individual EKS workloads, for example, file access, process execution, privilege escalation, and network connections identifying specific containers that may be potentially compromised.
 
