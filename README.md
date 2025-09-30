@@ -90,6 +90,48 @@ Signing a container image with Cosign makes your supply chain tamper-evident and
 
 # Adminssion Control (2025/09/27)
 
+# How to control no privileged container in namespace through admission controller
+1) Pod Security Admission (built-in; simplest)
+
+Kubernetes ≥1.25 replaces PodSecurityPolicy with Pod Security Admission (PSA).
+Label the namespace to enforce the restricted profile (which forbids privileged: true, along with other risky settings)
+
+kubectl label ns prod-apps \
+  pod-security.kubernetes.io/enforce=restricted \
+  pod-security.kubernetes.io/enforce-version=latest \
+  pod-security.kubernetes.io/warn=restricted \
+  pod-security.kubernetes.io/audit=restricted
+
+2) Kyverno policy (flexible; easy to read) 
+Install Kyverno, then apply a deny policy for privileged containers
+**bold**
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-privileged-containers
+spec:
+  validationFailureAction: Enforce   # or Audit while testing
+  rules:
+    - name: no-privileged
+      match:
+        any:
+        - resources:
+            kinds: ["Pod"]
+            namespaces: ["prod-apps"]   # or omit to affect all namespaces
+      validate:
+        message: "Privileged containers are not allowed"
+        pattern:
+          spec:
+            containers:
+            - securityContext:
+                # either not present or explicitly false
+                (privileged): "false"
+            # also cover initContainers if you use them:
+            =(initContainers):
+            - securityContext:
+                (privileged): "false"
+
+
 
 Kubernetes (K8s) Admission Control is a critical security and governance mechanism that acts as a "gatekeeper" for your cluster. It intercepts requests to the Kubernetes API server after the request has been authenticated and authorized, but before the object is persisted to etcd (the cluster's database).
 <img width="1718" height="622" alt="image" src="https://github.com/user-attachments/assets/8522290d-7abe-4eb5-b513-f9dac0e2aa0f" />
