@@ -166,6 +166,13 @@ Falco (by Sysdig) is the most popular and widely adopted container runtime secur
 1  fastest value, minimal ops, centralized AWS findings (Security Hub), and predictable pricing then Choose GuardDuty EKS Runtime Monitoring (+ EKS Protection)
 2  need custom, fine-grained policies (e.g., “alert if apt/yum runs in prod, except image X”), custom sinks, or multi-cloud/on-prem parity. Add Falco (often alongside GuardDuty)
 
+
+# GuardDuty EKS Runtime Monitoring (managed AWS):
+
+1 AWS agent (EKS add-on) observes process/file/network activity inside pods and maps findings to the exact container/pod. No rule writing; detections are AWS-curated. Findings land in GuardDuty/Security Hub with context. Billed per monitored vCPU. 
+
+2 Separate EKS Protection (no agent) also analyzes Kubernetes audit logs for risky API actions (e.g., kubectl exec, RBAC changes). Best used alongside Runtime Monitoring.
+
 # Practical combo (common in EKS) Many teams run both
 
 1 GuardDuty for managed detections + account-level visibility and compliance reporting.
