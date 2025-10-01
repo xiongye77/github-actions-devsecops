@@ -22,11 +22,14 @@ Post-build: scan the built artifact/image (OS packages + app deps). This catches
 
 Generate from the final image/binary so it exactly matches what you’ll deploy; sign/attest and store.
 
-Syft (Anchore) – CycloneDX/SPDX for images, dirs, repos.
+3.1 Syft (Anchore) – CycloneDX/SPDX for images, dirs, repos.
 syft ghcr.io/acme/app:1.2.3 -o cyclonedx-json > sbom.cdx.json
 
-Trivy (Aqua) – SBOM plus vuln/secret/IaC scanners.
+3.2 Trivy (Aqua) – SBOM plus vuln/secret/IaC scanners.
 trivy image --format cyclonedx -o sbom.cdx.json ghcr.io/acme/app:1.2.3
+
+<img width="1313" height="634" alt="image" src="https://github.com/user-attachments/assets/d4149501-efb3-4598-9ccb-37c680b1b820" />
+<img width="829" height="453" alt="image" src="https://github.com/user-attachments/assets/8aa660f1-4af0-4752-9148-44efaa7d5e57" />
 
 Sign images + SBOM attestation (Cosign).
 
@@ -51,6 +54,8 @@ trivy image --format cyclonedx -o sbom.cdx.json your.registry/app:tag
 # SCA(Software Composition Analysis): 
 Snyk test scans your dependencies; it fails the job on High/Critical issues and publishes SARIF to Security → Code scanning.
 Trivy: finds CVEs in OS packages & app dependencies in images, filesystems, and repos.
+AWS Inspector powers ECR enhanced scanning for OS & language-package vulns and can export SBOMs. Findings flow to Inspector/Security Hub/EventBridge.
+Inspector can generate/export SBOMs and standardize license data in SPDX expressions (helpful for supply-chain/OSS governance)
 
 # DAST(Dynamtic Application Security Testing): 
 it focuses on inputs and outputs of the running application.
